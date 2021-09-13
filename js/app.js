@@ -12,28 +12,44 @@ const controlSpinner = (isTrue) => {
 const loadProducts = () => {
   const url = `https://fakestoreapi.com/products`;
   fetch(url)
-    .then((response) => response.json())
-    .then((data) => showProducts(data));
+    .then(response => response.json())
+    .then(data => showProducts(data));
 };
+
 // loadProducts function call 
 loadProducts();
 
+// loadFilteredProducts function call 
+const loadFilteredProducts = () => {
+  const inputField = document.getElementById('input-field');
+  const inputValue = inputField.value;
+  // clear input field 
+  inputField.value = '';
+  if (inputValue !== '') {
+    const url = `https://fakestoreapi.com/products/category/${inputValue}`;
+    fetch(url)
+      .then(response => response.json())
+      .then(data => showProducts(data));
+  }
+
+};
+
 // show all product in UI 
 const showProducts = (products) => {
-  // const allProducts = products.map((pd) => pd);
+  const productsSection = document.getElementById("all-products");
+  productsSection.textContent = '';
   for (const product of products) {
     // starsPercentage function call 
     const starsPercentage = getRatingStars(product.rating.rate);
-
     const div = document.createElement("div");
     div.classList.add("product");
     div.innerHTML = `<div class="single-product">
       <div>
     <img class="product-image" src=${product.image}></img>
       </div>
-      <p class="fw-bold text-center">${product.title.slice(0, 50)}</p>
-      <p>Category: ${product.category}</p>
-      <h5 id="product-price">Price: $${product.price}</h5>
+      <p class="fw-bold text-center">${product.title.slice(0, 50)}...</p>
+      <p class="mb-2">Category: ${product.category}</p>
+      <h5 id="product-price" class="mb-0">Price: $${product.price}</h5>
       <div class="stars-outer">
           <div class="stars-inner" style="width:${starsPercentage};"></div>
           </div>
@@ -43,7 +59,7 @@ const showProducts = (products) => {
       <button type="button" onclick="loadProductDetails(${product.id})"  class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Details</button>
       </div>
       `;
-    document.getElementById("all-products").appendChild(div);
+    productsSection.appendChild(div);
 
     // controlSpinner function call 
     controlSpinner(false);
@@ -56,7 +72,7 @@ let count = 0;
 const addToCart = (id, price) => {
   // products count update 
   count = count + 1;
-  document.getElementById("total-Products").innerText = count;
+  const totalProducts = document.getElementById("total-Products").innerText = count;
 
   // updatePrice function call 
   updatePrice("price", price);
@@ -65,14 +81,14 @@ const addToCart = (id, price) => {
   // total price update function call 
   updateTotal();
 };
-
+// getInputValue declaration 
 const getInputValue = (id) => {
   const element = document.getElementById(id).innerText;
   const converted = parseFloat(element);
   return converted;
 };
 
-// set innerText function
+// setInnerText function declaration 
 const setInnerText = (id, value) => {
   document.getElementById(id).innerText = value.toFixed(2);
 };
@@ -82,6 +98,7 @@ const updatePrice = (id, value) => {
   const convertedOldPrice = getInputValue(id);
   const convertPrice = parseFloat(value);
   const total = convertedOldPrice + convertPrice;
+  // setInnerText function call 
   setInnerText(id, total);
   // document.getElementById(id).innerText = total.toFixed(2);
 };
@@ -127,7 +144,8 @@ const showProductDetails = product => {
         <img src="${product.image}" class="card-img-top img-fluid w-50 mx-auto" alt="...">
         <h5 class="modal-title" id="staticBackdropLabel">${product.title}</h5>
         <div class="card-body mt-0">
-          <p class="card-text">Price: $${product.price}</p>
+        <p class="card-text">Category: ${product.category}</p>
+          <h5 class="card-text">Price: $${product.price}</h5>
           <div class="stars-outer">
           <div class="stars-inner" style="width:${starsPercentage};"></div>
           </div>
@@ -149,6 +167,7 @@ const loadProductDetails = productId => {
 
 // clearCart function call 
 const clearCart = () => {
+  count = 0;
   document.getElementById('total-Products').innerText = 0;
   setInnerText('price', 0);
   setInnerText('delivery-charge', 0);

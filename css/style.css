@@ -1,6 +1,17 @@
+/* common styles  */
+*{
+  margin: 0;
+  padding: 0;
+  
+}
 body {
+  background: rgb(221, 221, 221);
   overflow-x: hidden;
   font-family: "Montserrat", sans-serif;
+}
+
+h1{
+   color: rgb(66, 66, 66);
 }
 .search-field {
   border: none;
@@ -28,27 +39,44 @@ body {
 #all-products {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
   /* border: 1px solid black; */
-  text-align: center;
-  width: 100%;
-  margin: auto;
+  
+  width: 90%;
+  margin: 0 auto;
   align-items: center;
   justify-content: center;
 }
 .single-product {
-  padding: 10px;
-  transition: 0.6s;
-}
-.single-product:hover {
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height:350px;
+  background:linear-gradient(rgb(255, 255, 255),rgb(211, 242, 243));
+  transition: all 0.7s ease-in-out;
   box-shadow: 4px 4px 7px gray;
   border-radius: 10px;
-  border: 1px solid cyan;
+    
 }
+.single-product:hover {
+  border: 1px solid rgb(165, 162, 162);
+  transform: scale(1.02);
+}
+
+
+#product-price{
+  color: rgb(126, 115, 53);
+}
+
 .product-image {
-  width: 150px;
-  height: 150px;
+  width: 100px;
+  height: 100px;
 }
 .cart {
+  background: cadetblue;
+  color: rgb(66, 66, 66);
   width: 350px;
   /* border: 1px solid green; */
   padding: 10px;
@@ -57,9 +85,43 @@ body {
   margin-right: 30px;
   position: fixed;
 }
-.cart-main {
-  padding-right: 30px;
+.cart table{
+  color: white;
 }
+.cart button, #search-btn{
+  background-color: rgb(66, 66, 66);
+  border: none;
+}
+.cart-main {
+  padding-right: 50px;
+}
+
+/* stars style  */
+.stars-outer{
+position:relative;
+display: inline-block;
+}
+.stars-inner{
+position: absolute;
+top: 0;
+left: 0;
+white-space: nowrap;
+overflow: hidden;
+width: 0;
+}
+.stars-outer::before{
+  content: "\f005 \f005 \f005 \f005 \f005";
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  color: #ccc;
+}
+.stars-inner::before{
+  content: "\f005 \f005 \f005 \f005 \f005";
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  color: #f8ce0b;
+}
+
 @media only screen and (max-width: 768px) {
   #all-products {
     display: grid;

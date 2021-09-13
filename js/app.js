@@ -1,31 +1,56 @@
+// controlSpinner function call 
+const controlSpinner = (isTrue) => {
+  if (isTrue) {
+    document.getElementById('spinner').style.display = 'block';
+  }
+  else {
+    document.getElementById('spinner').style.display = 'none';
+  }
+}
+
+// loadProducts function declaration 
 const loadProducts = () => {
   const url = `https://fakestoreapi.com/products`;
   fetch(url)
     .then((response) => response.json())
     .then((data) => showProducts(data));
 };
+// loadProducts function call 
 loadProducts();
 
 // show all product in UI 
 const showProducts = (products) => {
   // const allProducts = products.map((pd) => pd);
   for (const product of products) {
-    const image = product.image;
+    // starsPercentage function call 
+    const starsPercentage = getRatingStars(product.rating.rate);
+
     const div = document.createElement("div");
-    div.classList.add("product", "card", "h-100");
+    div.classList.add("product");
     div.innerHTML = `<div class="single-product">
       <div>
-    <img class="product-image" src=${image}></img>
+    <img class="product-image" src=${product.image}></img>
       </div>
-      <h3>${product.title}</h3>
+      <p class="fw-bold text-center">${product.title.slice(0, 50)}</p>
       <p>Category: ${product.category}</p>
-      <h2>Price: $ ${product.price}</h2>
+      <h5 id="product-price">Price: $${product.price}</h5>
+      <div class="stars-outer">
+          <div class="stars-inner" style="width:${starsPercentage};"></div>
+          </div>
+      <p>${product.rating.rate} (${product.rating.count} Ratings)</p>
+      <div>
       <button onclick="addToCart(${product.id},${product.price})" id="addToCart-btn" class="buy-now btn btn-success">add to cart</button>
-      <button id="details-btn" class="btn btn-danger">Details</button></div>
+      <button type="button" onclick="loadProductDetails(${product.id})"  class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Details</button>
+      </div>
       `;
     document.getElementById("all-products").appendChild(div);
+
+    // controlSpinner function call 
+    controlSpinner(false);
   }
 };
+
+
 let count = 0;
 //--------------------- addToCart function declaration --------------------//
 const addToCart = (id, price) => {
@@ -87,3 +112,57 @@ const updateTotal = () => {
   setInnerText("total", grandTotal);
   // document.getElementById("total").innerText = grandTotal.toFixed(2);
 };
+
+// showProductDetails function call 
+const showProductDetails = product => {
+  // starsPercentage function call 
+  const starsPercentage = getRatingStars(product.rating.rate);
+  document.getElementById('product-details-area').innerHTML = `
+  <div class="modal-content container-fluid">
+ <div class="modal-header">
+<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+<div class="card text-center" >
+        <img src="${product.image}" class="card-img-top img-fluid w-50 mx-auto" alt="...">
+        <h5 class="modal-title" id="staticBackdropLabel">${product.title}</h5>
+        <div class="card-body mt-0">
+          <p class="card-text">Price: $${product.price}</p>
+          <div class="stars-outer">
+          <div class="stars-inner" style="width:${starsPercentage};"></div>
+          </div>
+          <p>${product.rating.rate} (${product.rating.count} Ratings)</p>
+          <p class="card-text"> ${product.description}</p>
+        </div>
+      </div>
+</div>
+</div>
+`
+}
+// showDetails  function declaration 
+const loadProductDetails = productId => {
+  const url = `https://fakestoreapi.com/products/${productId}`
+  fetch(url)
+    .then(res => res.json())
+    .then(data => showProductDetails(data));
+}
+
+// clearCart function call 
+const clearCart = () => {
+  document.getElementById('total-Products').innerText = 0;
+  setInnerText('price', 0);
+  setInnerText('delivery-charge', 0);
+  setInnerText('total-tax', 0);
+  setInnerText('total', 0);
+}
+
+// getRatings function call 
+const getRatingStars = (rating) => {
+  const starsTotal = 5;
+  // get stars percentage 
+  const starsPercentage = (rating / starsTotal) * 100;
+  // round to nearest 10 
+  const starsPercentageRound = `${Math.round(starsPercentage / 10) * 10}%`;
+  return starsPercentageRound;
+
+}
